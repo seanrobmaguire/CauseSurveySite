@@ -1,0 +1,79 @@
+﻿@model Coursework.Models.Cause
+
+@{
+                /**/
+
+                ViewBag.Title = "Delete";
+}
+
+
+<div class="bg"></div>
+<div class="jumbotron" style="height:200px; background-image: url(@Model.Category.catImage);">
+    <h2 class="text-light bg-dark display-1">@Model.Title</h2>
+</div>
+
+<div class="container my-5">
+
+    <div class="row ">
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-4">
+                    <h5>
+                        Category:
+                    </h5>
+                    @Html.DisplayFor(model => model.Category.Name)
+                </div>
+                <div class="col-4">
+                    <h5>
+
+                        @Html.DisplayNameFor(model => model.createdBy)
+                    </h5>
+                    @Html.DisplayFor(model => model.createdBy)
+                </div>
+                <div class="col-4">
+                    <h5>
+                        @Html.DisplayNameFor(model => model.createdOn)
+                    </h5>
+                    @Html.DisplayFor(model => model.createdOn)
+                </div>
+            </div>
+
+            <hr />
+
+            <h5>Description:</h5>
+            <p>@Html.DisplayFor(model => model.Description)</p>
+        </div>
+
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h2>Delete this iObjection?</h2>
+                    <p class="error">@ViewBag.ErrorMessage</p>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="row">
+                                <div class="col-6">
+                                    @using (Html.BeginForm())
+                                    {
+                                        @Html.AntiForgeryToken()
+
+                                        <div class="form-actions no-color">
+                                            <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i> Delete</button>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="col-6">
+                                    <button class="btn btn-secondary mr-2"><a class="btn-secondary" href="/Cause/Details/@Model.CauseID">Cancel</a></button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>

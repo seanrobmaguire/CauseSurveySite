@@ -1,0 +1,39 @@
+﻿@model Coursework.Models.User
+
+@{
+                /**/
+
+                ViewBag.Title = "Delete";
+}
+
+<div class="row">
+    <div class="col-sm-12 col-md-6">
+        <h2>Are you sure you want to delete your account?</h2>
+        <p class="error">@ViewBag.ErrorMessage</p>
+        <div class="row">
+            <div class="col-sm-3">
+                <img style="width:100px" src="@Model.UserImage" alt="User image" />
+            </div>
+            <div class="col-sm-8">
+                <h4>@Model.Username </h4>
+
+                <div class="row">
+                    <div class="col-6">
+                        @using (Html.BeginForm())
+                        {
+                            @Html.AntiForgeryToken()
+
+                            <div class="form-actions no-color">
+                                <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i> Delete</button>
+                            </div>
+                        }
+                    </div>
+                    <div class="col-6">
+                        <button class="btn btn-secondary mr-2"><a class="btn-secondary" href="/User/Details/@Model.ID">Cancel</a></button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

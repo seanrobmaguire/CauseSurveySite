@@ -1,0 +1,357 @@
+﻿<!--modal code written with https://getbootstrap.com/docs/4.0/components/modal/ and https://www.w3schools.com/bootstrap/bootstrap_modal.asp-->
+<!--Navigation tabs written with https://www.w3schools.com/bootstrap/bootstrap_tabs_pills.asp and https://www.w3schools.com/bootstrap/bootstrap_tabs_pills.asp-->
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item" id="login-tab-li">
+                        <a class="nav-link active" id="login-tab" data-toggle="tab" href="#login-form-pane" role="tab" aria-controls="login" aria-selected="true">Log in</a>
+                    </li>
+                    <li class="nav-item" id="signup-tab-li">
+                        <a class="nav-link" id="signup-tab" data-toggle="tab" href="#signup-form-pane" role="tab" aria-controls="signup" aria-selected="false">Sign up</a>
+                    </li>
+                </ul><!--close tabs-->
+                <a href="#" class="close" data-dismiss="modal" id="closeModalBtn">&times;</a>
+            </div>
+            <div class="modal-body">
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="login-form-pane" role="tabpanel" aria-labelledby="login-tab">
+                        <p>Log in</p>
+                        <form id="loginForm">
+
+
+                            @Html.AntiForgeryToken()
+                            <div class="form-group">
+                                <div class="col-sm-10">
+                                    <input class="form-control" type="email" name="Email" id="logEmail" placeholder="Email" />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-sm-10">
+                                    <input class="form-control" type="password" name="Password" id="logPassword" placeholder="Password" />
+
+                                </div>
+                            </div>
+                        </form>
+                        <div id="invalidLog" class="alert alert-danger alert-dismissible">
+                            <a id="linkClose" class="close" href="#" data-dismiss="alert">&times;</a>
+                            <div id="LogErrorText"></div>
+                        </div>
+                        <div id="successLog" class="alert alert-success alert-dismissible">
+                            <a id="linkClose" class="close" href="#" data-dismiss="alert">&times;</a>
+                            <div id="divsucessText">Welcome back @Session["UserName"]</div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-off-set-2 col-sm-10">
+                                <button type="submit" class="btn btn-primary disabled" id="loginFormBtn" disabled="disabled" onclick="Login()">Log in</button>
+                            </div>
+                        </div>
+
+                    </div><!--close login-->
+                    <div class="tab-pane fade" id="signup-form-pane" role="tabpanel" aria-labelledby="signup-tab">
+                        <p>Sign up</p>
+                        <form id="Registration">
+
+                            <div class="container">
+                                @Html.AntiForgeryToken()
+                                <div class="form-group">
+                                    <input class="form-control" type="text" name="Username" id="user" placeholder="Username" />
+                                </div>
+
+                                <div class="form-group">
+                                    <input class="form-control" type="email" name="Email" id="Email" placeholder="Email" />
+
+                                </div>
+
+                                <div class="form-group">
+                                    <input class="form-control" name="password" id="txtPassword" placeholder="Password" type="password" required />
+                                </div>
+
+                                <div class="form-group">
+                                    <input class="form-control" name="confirmpassword" id="confirmTxtPassword" placeholder="Confirm Password" type="password" required />
+                                </div>
+                            </div>
+                        </form>
+                        <div id="notValid" class="alert alert-danger alert-dismissible">
+                            <a id="linkClose" class="close" href="#" data-dismiss="alert">&times;</a>
+                            <div id="divErrorText1"></div>
+                        </div>
+
+                        <div id="success" class="alert alert-success alert-dismissible">
+                            <a id="linkClose" class="close" href="#" data-dismiss="alert">&times;</a>
+                            <div id="divSucessText"></div>
+                        </div>
+                        <button type="submit" class="btn btn-primary disabled" id="signupbtn" disabled="disabled" onclick="SaveForm()">Sign up</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    //Login System
+    $myModal = $('#myModal');
+    $loginFormBtn = $('#loginFormBtn');
+    $invalidLog = $("#invalidLog");
+    $sucessLog = $("#successLog");
+    $logEmail = $('#logEmail');
+    $logPassword = $('#logPassword');
+
+    $LogErrorText = $('#LogErrorText');
+
+    //hide login messages
+    $invalidLog.hide();
+    $sucessLog.hide()
+
+
+    //validate email login
+    //code written with reference to book by Jon Duckett, JavaScript & jQuery interactive front end developemtn
+    $logEmail.on('keyup', function () {
+        var re = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+        var is_logEmail = re.test($logEmail.val());
+
+        if (is_logEmail) {
+            $logEmail.removeClass('is-invalid');
+            $logEmail.addClass('is-valid');
+            $invalidLog.hide();
+
+        } else {
+            $logEmail.removeClass('is-valid');
+            $logEmail.addClass('is-invalid');
+            $LogErrorText.text("Enter a valid Email");
+            $invalidLog.show();
+        }
+    });
+
+    //validate login password
+    //check Password is 8 characters and a capital and number
+    //code written with reference to book by Jon Duckett, JavaScript & jQuery interactive front end developemtn
+
+    $logPassword.on('keyup', function () {
+        var re = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$/;
+        var is_logPasswordValid = re.test($logPassword.val());
+        if (is_logPasswordValid) {
+            $logPassword.removeClass("is-invalid");
+            $logPassword.addClass("is-valid");
+            $invalidLog.hide();
+        }
+        else {
+            $logPassword.removeClass("is-valid");
+            $logPassword.addClass("is-invalid");
+            $LogErrorText.text("Enter a valid password");
+            $invalidLog.show();
+        }
+    });
+
+    //enable login button
+    $logPassword.on('keyup', function () {
+        if ($logPassword.hasClass('is-valid') && $logEmail.hasClass('is-valid')) {
+            $loginFormBtn.removeClass('disabled').removeAttr('disabled');
+
+        } else {
+            $loginFormBtn.addClass('disabled').attr('disabled', 'disabled');
+        }
+
+    });
+
+    //onclicking log in button
+    //code taken from https://www.youtube.com/watch?v=dzT0bGUS6Fs
+
+    var Login = function () {
+        var data = $("#loginForm").serialize();
+        $.ajax({
+            type: "post",
+            url: "/Home/Login",
+            data: data,
+            success: function (result) {
+                if (result == "Fail") {
+                    $("#loginForm")[0].reset();
+                    $LogErrorText.text("Invalid username or password");
+                    $("#invalidLog").show();
+                    $('#successLog').hide();
+                    $('input').removeClass('is-valid is-invalid');
+                }
+                else {
+                    $("#invalid").hide();
+                    $("#divsucessText").text("Welcome back " + result)
+                    $('#successLog').show();
+
+                    setTimeout(function () {
+                        window.location.href = "/Home/Index";
+                    }, 2000);
+                }
+            }
+        })
+    }
+
+
+    //hide signup messages
+
+    $("#success").hide();
+
+    //validate sign up form
+    //code written with reference to book by Jon Duckett, JavaScript & jQuery interactive front end developemtn
+
+    var $txtPassword = $('#txtPassword');
+    var $confirmTxtPassword = $('#confirmTxtPassword');
+    var $email = $('#Email');
+    var $user = $('#user');
+    var $errorText = $('#divErrorText1');
+    var $notValid = $('#notValid');
+    var $signupbtn = $('#signupbtn');
+
+    $notValid.hide();
+
+    //check Password is 8 characters and a capital and number
+    //code written with reference to book by Jon Duckett, JavaScript & jQuery interactive front end developemtn
+
+    $txtPassword.on('keyup', function () {
+        var re = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$/;
+        var is_passwordValid = re.test($txtPassword.val());
+        if (is_passwordValid) {
+            $txtPassword.removeClass("is-invalid");
+            $txtPassword.addClass("is-valid");
+            $notValid.hide();
+        }
+        else {
+            $txtPassword.removeClass("is-valid");
+            $txtPassword.addClass("is-invalid");
+            $errorText.text("Password must be 8 characters including a number and capital");
+            $notValid.show();
+        }
+    });
+
+    //check confirm passwords match
+    $confirmTxtPassword.on('keyup', function () {
+        if ($confirmTxtPassword.val() != $txtPassword.val()) {
+            $confirmTxtPassword.removeClass('is-valid');
+            $txtPassword.removeClass('is-valid');
+            $confirmTxtPassword.addClass('is-invalid');
+            $txtPassword.addClass('is-invalid');
+            $errorText.text("Passwords do not match");
+            $notValid.show();
+
+        }
+        else {
+            $confirmTxtPassword.removeClass('is-invalid');
+            $txtPassword.removeClass('is-invalid');
+            $confirmTxtPassword.addClass('is-valid');
+            $txtPassword.addClass('is-valid');
+            $notValid.hide();
+        }
+    });
+    //check valid email is entered
+    //code written with reference to book by Jon Duckett, JavaScript & jQuery interactive front end developemtn
+
+    $email.on('keyup', function () {
+        var re = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+        var is_email = re.test($email.val());
+
+        if (is_email) {
+            $email.removeClass('is-invalid');
+            $email.addClass('is-valid');
+            $notValid.hide();
+
+        } else {
+            $email.removeClass('is-valid');
+            $email.addClass('is-invalid');
+            $errorText.text("Email must be valid");
+            $notValid.show();
+        }
+    });
+    //check username is 8 characters and a capital and number
+    //code written with reference to book by Jon Duckett, JavaScript & jQuery interactive front end developemtn
+
+    $user.on('keyup', function () {
+        var re = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$/;
+        var is_name = re.test($user.val());
+        if (is_name) {
+            $user.removeClass("is-invalid");
+            $user.addClass("is-valid");
+            $notValid.hide();
+        }
+        else {
+            $user.removeClass("is-valid");
+            $user.addClass("is-invalid");
+            $errorText.text("Username must be 8 characters including a number and capital");
+            $notValid.show();
+        }
+    });
+    //if all fields valid submit button is enabled
+    //code written with reference to book by Jon Duckett, JavaScript & jQuery interactive front end developemtn
+
+    $confirmTxtPassword.on('keyup', function () {
+        if ($confirmTxtPassword.hasClass('is-valid') && $user.hasClass('is-valid') && $email.hasClass('is-valid')) {
+            $signupbtn.removeClass('disabled').removeAttr('disabled');
+
+        } else {
+            $signupbtn.addClass('disabled').attr('disabled', 'disabled');
+        }
+    });
+
+    //on clicking submit button
+    //code take from https://www.youtube.com/watch?v=dzT0bGUS6Fs
+
+    function SaveForm() {
+        //get for data
+        var data = $('#Registration').serialize();
+        //do ajax call
+        $.ajax({
+            type: "post",
+            data: data,
+            url: "/User/Register",
+            success: function (result) {
+
+                switch (result) {
+                    case "Registration sucessful":
+                        $notValid.hide();
+                        $('#divSucessText').text(result);
+                        $('#success').show();
+                        $('input').removeClass('is-valid is-invalid');
+                        $signupbtn.addClass('disabled').attr('disabled', 'disabled');
+                        $("#Registration")[0].reset();
+                        //close signup box
+                        setTimeout(function () {
+                            $('#signup-tab').removeClass('active');
+                            $('#login-tab').addClass('active');
+                            $('#signup-form-pane').removeClass('active show');
+                            $('#login-form-pane').addClass('active show');
+                        }, 1500);
+                        break;
+
+                    case "Email already registered":
+                        $('#success').hide();
+                        $errorText.text(result);
+                        $notValid.show();
+                        $signupbtn.addClass('disabled').attr('disabled', 'disabled');
+                        $("#Registration")[0].reset();
+                        $('input').removeClass('is-valid is-invalid');
+                        break;
+
+                    case "Username already registered":
+                        $('#success').hide();
+                        $errorText.text(result);
+                        $notValid.show();
+                        $signupbtn.addClass('disabled').attr('disabled', 'disabled');
+                        $("#Registration")[0].reset();
+                        $('input').removeClass('is-valid is-invalid');
+                        break;
+
+                    case "Fail":
+                        $('#success').hide();
+                        $errorText.text(result);
+                        $notValid.show();
+                        $signupbtn.addClass('disabled').attr('disabled', 'disabled');
+                }
+            }
+        });
+    }
+
+
+
+
+</script>

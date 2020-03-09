@@ -1,0 +1,157 @@
+﻿@model Coursework.Models.Cause
+
+@{
+                /**/
+
+
+                ViewBag.Title = "Edit";
+}
+<div class="row">
+    <div class="col-12">
+        <h2>Edit this iObjection:</h2>
+        <h4>@Model.Title</h4>
+        <hr />
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12 col-md-6">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <div class="form-horizontal">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.CauseID)
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2 font-weight-bold" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-2 font-weight-bold" for="CategoryID">Category:</label>
+                    <div class="col-md-10">
+                        @Html.DropDownList("CategoryID", "Select category")
+                        @Html.ValidationMessageFor(model => model.CategoryID, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-6 font-weight-bold" })
+                    <div class="col-md-12">
+                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", rows = "10" } })
+                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Target, htmlAttributes: new { @class = "control-label col-md-6 font-weight-bold" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Target, new { htmlAttributes = new { @class = "form-control w-10" } })
+                        @Html.ValidationMessageFor(model => model.Target, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+
+                        <div class="col-3">
+                            <div class="form-actions">
+                                <button class="btn btn-primary mr-2" type="submit"><i class="far fa-save"></i> Save</button>
+
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <button href="User/Details/@Model.CauseID" class="btn btn-secondary">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        }
+    </div>
+    <div class="col-sm-12 col-md-6">
+        <div class="image-container">
+            <img src="@Model.Category.catImage" alt="@Model.Category.Name image" id="current-image" />
+
+            <!--All images from www.pexel.com-->
+            <img src="~/Images/animalRights.jpg" class="select-image" id="animal" />
+            <img src="~/Images/economical.jpg" class="select-image" id="economical" />
+            <img src="~/Images/evironmental.jpg" class="select-image" id="evironmental" />
+            <img src="~/Images/humanRights.jpg" class="select-image" id="human" />
+            <img src="~/Images/international.jpg" class="select-image" id="international" />
+            <img src="~/Images/lgbt.jpg" class="select-image" id="lgbt" />
+            <img src="~/Images/other.jpg" class="select-image" id="other" />
+            <img src="~/Images/political.jpg" class="select-image" id="political" />
+            <img src="~/Images/social.jpg" class="select-image" id="social" />
+
+            <h2 class="font-italic text-light bg-dark image-quote" id="image-cat"></h2>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    //code written with reference to book by Jon Duckett, JavaScript & jQuery interactive front end developemtn
+    //Images change when new category selected
+    $(document).ready(function () {
+        var $selectImage = $('.select-image');
+        $selectImage.hide();
+        $currentImage = $('#current-image');
+        $('select').on('change', function () {
+            $currentImage.hide();
+            var selected = $('select option:selected').text();
+            $('#image-cat').text(selected);
+            switch (selected) {
+                case "Select category":
+                    $selectImage.hide();
+                    $currentImage.show();
+                    $('#image-cat').text('@Model.Category.Name');
+                    break;
+                case "Political":
+                    $selectImage.hide();
+                    $('#political').show();
+                    break;
+                case "Social":
+                    $selectImage.hide();
+                    $('#social').show();
+                    break;
+                case "Economical":
+                    $selectImage.hide();
+                    $('#economical').show();
+                    break;
+                case "Human Rights":
+                    $selectImage.hide();
+                    $('#human').show();
+                    break;
+                case "LGBTQ":
+                    $selectImage.hide();
+                    $('#lgbt').show();
+                    break;
+                case "Animal Rights":
+                    $selectImage.hide();
+                    $('#animal').show();
+                    break;
+                case "Enviromental":
+                    $selectImage.hide();
+                    $('#evironmental').show();
+                    break;
+                case "Internatonal":
+                    $selectImage.hide();
+                    $('#international').show();
+                    break;
+                case "Other":
+                    $selectImage.hide();
+                    $('#other').show();
+                    break;
+            }
+        });
+    });
+
+
+
+</script>

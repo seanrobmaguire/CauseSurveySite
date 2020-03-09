@@ -1,0 +1,132 @@
+﻿@model Coursework.Models.Cause
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+@{ ViewBag.Title = "Details";}
+
+<div class="bg"></div>
+<div class="jumbotron" style="height:200px; background-image: url(@Model.Category.catImage);">
+    <h2 class="text-light bg-dark display-1">@Model.Title</h2>
+</div>
+
+<div class="container my-5">
+
+    <div class="row ">
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-4">
+                    <h5>
+                        Category:
+                    </h5>
+                    @Html.DisplayFor(model => model.Category.Name)
+                </div>
+                <div class="col-4">
+                    <h5>
+
+                        @Html.DisplayNameFor(model => model.createdBy)
+                    </h5>
+                    @Html.DisplayFor(model => model.createdBy)
+                </div>
+                <div class="col-4">
+                    <h5>
+                        @Html.DisplayNameFor(model => model.createdOn)
+                    </h5>
+                    @Html.DisplayFor(model => model.createdOn)
+                </div>
+            </div>
+
+            <hr />
+            <div class="row">
+
+            </div>
+
+            <h5>Description:</h5>
+            <p>@Html.DisplayFor(model => model.Description)</p>
+            <div class="row justify-content-center">
+                <h4>Share on social media</h4>
+            </div>
+            <!--social media links https://www.w3schools.com/howto/howto_css_social_media_buttons.asp-->
+            <div id="socialMedia" class="d-flex justify-content-between">
+                <a href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:51500/Cause/Details/@Model.CauseID" class="fa fa-facebook fa-3x" target="_blank">
+                </a>
+                <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="fa fa-twitter fa-3x" data-text="I signed this iObjection! You should too." data-show-count="false" target="_blank"></a>
+                <a href="//www.reddit.com/submit?url=http://localhost:51500/Cause/Details/@Model.CauseID" class="fa fa-reddit fa-3x" target="_blank"></a>
+                <a href="https://www.linkedin.com/shareArticle?url=http://localhost:51500/Cause/Details/@Model.CauseID" class="fa-3x fa fa-linkedin" target="_blank"></a>
+                <a href="http://Tumblr.com/widgets/share/tool?canonicalUrl=http://localhost:51500/Cause/Details/@Model.CauseID" class="fa fa-tumblr fa-3x" target="_blank">
+                </a>
+            </div>
+
+        </div>
+
+        <div class="container col-md-6">
+            <h5>
+                Target number of signatures: @Html.DisplayFor(model => model.Target)
+            </h5>
+
+            <div class="row">
+                <div class="col-12">
+
+                    <div id="signatureTable">
+
+                        @{
+
+                            Html.RenderPartial("_Sign", Model);
+                        }
+                    </div>
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+        //code written with reference to book by Jon Duckett, JavaScript & jQuery interactive front end developemtn
+
+    var signaturesTable = $('#signatures');
+    var $signbtn = $('#signbtn');
+
+    //hide thanks message
+    $('#signSuccess').hide();
+
+    $signbtn.on('click', function (event) {
+        event.preventDefault();
+        var data = @Model.CauseID.ToString();
+
+
+        $.ajax({
+            type: "post",
+            data: data,
+            url: "/Cause/Sign/@Model.CauseID",
+            success: function (result) {
+                if (result = "Thanks for signing this cause") {
+                    $('#signStatus').hide();
+
+                }
+            }
+        });
+
+        //update the table
+        //code taken from https://stackoverflow.com/questions/5052543/how-to-fire-ajax-request-periodically by username: drewish
+        (function signTable() {
+            $.ajax({
+                url: '/cause/signTable/@Model.CauseID',
+                success: function (result) {
+                    $('#signatureTable').html(result);
+
+                },
+                complete: function () {
+                    setTimeout(signTable, 3000);
+                }
+            });
+        })();
+    });
+
+
+
+</script>
+
+
+

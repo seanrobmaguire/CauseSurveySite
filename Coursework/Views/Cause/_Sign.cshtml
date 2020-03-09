@@ -1,0 +1,108 @@
+﻿@model Coursework.Models.Cause
+<div class="row">
+    <div class="col-4" id="signCount">
+        <h5>Signatures: <span class="badge badge-success">@Model.Signatures.Count</span></h5>
+    </div>
+</div>
+<div class="progress my-2">
+    <div class="progress-bar progress-bar-striped progress-bar-animated" id="progressBar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+</div>
+<div id="scrollTable">
+
+    <table id="signatures" class="col-sm-12 table  table-striped table-bordered table-dark table-hover">
+        <thead>
+        <th>
+            User Image
+        </th>
+        <th>
+            Name
+        </th>
+        <th>
+            Date Signed
+        </th>
+        </thead>
+        @foreach (var item in Model.Signatures.OrderByDescending(i => i.signedOn))
+        {
+            <tr>
+                <td>
+                    <img style="width: 50px" src="@item.User.UserImage" alt="Cause @item.User.Username image" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.Username)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.signedOn)
+                </td>
+            </tr>
+        }
+    </table>
+
+</div>
+@if (Model.Signatures.Count < 1)
+{
+    <div class="row justify-content-center" id="noSigns">
+        <h6>No signatures yet, be the first</h6>
+    </div>
+}
+
+<div id="signSuccess" class="alert alert-success alert-dismissible ">
+    <a id="linkClose" class="close" href="#" data-dismiss="alert">&times;</a>
+    <div id="signSuccessText" class=" row justify-content-center">Thanks for signing!</div>
+</div>
+<div class="row justify-content-center my-2">
+    @{
+        if (Session["UserID"] != null)
+        {
+            if (Convert.ToInt32(Session["UserID"]) == Model.UserID || Session["Role"].ToString() == "admin")
+            {
+                <h4>You can edit this iObjection </h4> @Html.ActionLink("Edit", "Edit", new { id = Model.CauseID }, new { @class = "btn btn-secondary ml-2" })
+                if (Session["Role"].ToString() == "admin")
+                {
+                    @Html.ActionLink("Delete", "Delete", new { id = Model.CauseID }, new { @class = "btn btn-danger ml-2" })
+                }
+                <br />
+            }
+
+
+            if (ViewBag.signedAlready != null)
+            {
+                <h4>You have signed this already</h4>
+                <br />
+            }
+            else
+            {
+                <div class="row my-2" id="signStatus">
+                    <h4>Sign this iObjection! </h4>
+                    <button type="button" class="btn btn-success ml-2" style="cursor:pointer" id="signbtn">Sign</button>
+                </div>
+                <br />
+            }
+
+        }
+        else
+        {
+            <h4>Sign this iObjection! </h4>
+            <button type="button" class="btn btn-success ml-2 my-2" data-toggle="modal" data-target="#myModal" style="cursor:pointer" id="loginBtn">Sign</button>
+        }
+    }
+</div>
+
+
+<script>
+
+     //progess bar code written using https://www.w3schools.com/howto/howto_js_progressbar.asp
+    var progressBar = $('#progressBar');
+    var progressIncrease = 1/@Model.Target * 100;
+    var progressWidth = @Model.Signatures.Count * progressIncrease;
+    progressBar.width(progressWidth + "%");
+
+    var width = $('#progressBar').width();
+    var parentWidth = $('#progressBar').offsetParent().width()
+    var percent = 100 * width / parentWidth;
+    if (percent == 100) {
+        $('#signCount').after("<div><h4 class='text-success'>Target reached!</h4></div>");
+
+    }
+
+
+</script>

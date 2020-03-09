@@ -1,0 +1,239 @@
+﻿@model Coursework.Models.Cause
+
+@{
+                /**/
+
+                ViewBag.Title = "Create";
+}
+<div class="row">
+    <div class="col-12">
+        <h2>Create a new iObjection</h2>
+        <hr />
+
+    </div>
+</div>
+<div>
+    <p class="font-weight-bold">* all fields required</p>
+</div>
+<div class="row">
+
+    <div class="col-sm-12 col-md-6">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    <label class="control-label col-md-2 font-weight-bold" for="Title">Title:*</label>
+
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control", id = "titleInput" } })
+                        @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+                        <div class="text-danger" id="titleError"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-2 font-weight-bold" for="CategoryID">Category:*</label>
+                    <div class="col-md-10">
+                        @Html.DropDownList("CategoryID", "Select category")
+                        @Html.ValidationMessageFor(model => model.CategoryID)
+                        <div class="text-danger" id="selectError"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-2 font-weight-bold" for="Description">Description:*</label>
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", rows = "10", id = "descriptionInput" } })
+                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                        <div class="text-danger" id="descriptionError"></div>
+
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label class="control-label col-md-10 font-weight-bold" for="Target">Signature Target:*</label>
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Target, new { htmlAttributes = new { @class = "form-control", id = "targetInput" } })
+                        @Html.ValidationMessageFor(model => model.Target, "", new { @class = "text-danger", min = "10", max = "1000" })
+                        <div class="text-danger" id="targetError"></div>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <div class="btn-group ">
+                            <div class="mr-3">
+                                <button class="btn btn-primary mr-2" id="saveButton" type="submit"><i class="far fa-save"></i> Save</button>
+                            </div>
+                            <div class="col-md-offset-5 ml-5">
+                                <button href="User/Index" class="btn btn-secondary">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="col-sm-12 col-md-6">
+        <div class="image-container">
+            <!--image for category-->
+            <img src="~/Images/animalRights.jpg" class="select-image" id="animal" />
+            <img src="~/Images/economical.jpg" class="select-image" id="economical" />
+            <img src="~/Images/evironmental.jpg" class="select-image" id="evironmental" />
+            <img src="~/Images/humanRights.jpg" class="select-image" id="human" />
+            <img src="~/Images/international.jpg" class="select-image" id="international" />
+            <img src="~/Images/lgbt.jpg" class="select-image" id="lgbt" />
+            <img src="~/Images/other.jpg" class="select-image" id="other" />
+            <img src="~/Images/political.jpg" class="select-image" id="political" />
+            <img src="~/Images/social.jpg" class="select-image" id="social" />
+
+            <h2 class="font-italic text-light bg-dark image-quote" id="image-cat"></h2>
+        </div>
+    </div>
+
+</div>
+
+
+
+<script>
+    //code written with reference to book by Jon Duckett, JavaScript & jQuery interactive front end developemtn
+    //Images change when new category selected
+    $(document).ready(function () {
+        var $selectImage = $('.select-image');
+        $selectImage.hide();
+        $select = $('select');
+        $selectError = $('#selectError');
+        $select.on('change', function () {
+            var selected = $('select option:selected').text();
+            $('#image-cat').text(selected);
+            switch (selected) {
+                case "Select category":
+                    $selectImage.hide();
+                    $('#image-cat').text('');
+                    $select.removeClass('is-valid');
+                    $select.addClass('is-invalid');
+                    $selectError.text('Category is required');
+                    break;
+                case "Political":
+                    $selectImage.hide();
+                    $('#political').show();
+                    $select.removeClass('is-invalid');
+                    $select.addClass('is-valid');
+                    $selectError.text('');
+                    break;
+                case "Social":
+                    $selectImage.hide();
+                    $('#social').show();
+                    $select.removeClass('is-invalid');
+                    $select.addClass('is-valid');
+                    $selectError.text('');
+                    break;
+                case "Economical":
+                    $selectImage.hide();
+                    $('#economical').show();
+                    $select.removeClass('is-invalid');
+                    $select.addClass('is-valid');
+                    $selectError.text('');
+                    break;
+                case "Human Rights":
+                    $selectImage.hide();
+                    $('#human').show();
+                    $select.removeClass('is-invalid');
+                    $select.addClass('is-valid');
+                    $selectError.text('');
+                    break;
+                case "LGBTQ":
+                    $selectImage.hide();
+                    $('#lgbt').show();
+                    $select.removeClass('is-invalid');
+                    $select.addClass('is-valid');
+                    $selectError.text('');
+                    break;
+                case "Animal Rights":
+                    $selectImage.hide();
+                    $('#animal').show();
+                    $select.removeClass('is-invalid');
+                    $select.addClass('is-valid');
+                    $selectError.text('');
+                    break;
+                case "Enviromental":
+                    $selectImage.hide();
+                    $('#evironmental').show();
+                    $select.removeClass('is-invalid');
+                    $select.addClass('is-valid');
+                    $selectError.text('');
+                    break;
+                case "Internatonal":
+                    $selectImage.hide();
+                    $('#international').show();
+                    $select.removeClass('is-invalid');
+                    $select.addClass('is-valid');
+                    $selectError.text('');
+                    break;
+                case "Other":
+                    $selectImage.hide();
+                    $('#other').show();
+                    $select.removeClass('is-invalid');
+                    $select.addClass('is-valid');
+                    $selectError.text('');
+                    break;
+            }
+        });
+        //validate fields
+
+        $titleInput = $('#titleInput');
+        $titleError = $('#titleError');
+        $descriptionInput = $('#descriptionInput');
+        $descriptionError = $('#descriptionError');
+        $targetInput = $('#targetInput');
+
+
+        $titleInput.on('keyup', function () {
+            $titleLength = $titleInput.val().length;
+            if ($titleLength > 0 && $titleLength < 160) {
+                $titleInput.removeClass('is-invalid');
+                $titleInput.addClass('is-valid');
+                $titleError.text("");
+
+            } else {
+                $titleInput.removeClass('is-valid');
+                $titleInput.addClass('is-invalid');
+                $titleError.text("Title must be less than 160 characters");
+            }
+
+        });
+
+        $descriptionInput.on('keyup', function () {
+            $descriptionLength = $descriptionInput.val().length;
+            if ($descriptionLength > 99 && $descriptionLength < 9999) {
+                $descriptionInput.removeClass('is-invalid');
+                $descriptionInput.addClass('is-valid');
+                $descriptionError.text("");
+            } else {
+                $descriptionInput.removeClass('is-valid');
+                $descriptionInput.addClass('is-invalid');
+                $descriptionError.text("Description must be between 100 and 10000 characters")
+            }
+        });
+
+        $targetInput.on('keyup', function () {
+            $targetLength = $targetInput.val();
+            if ($targetLength > 9 && $targetLength < 1001) {
+                $targetInput.removeClass('is-invalid');
+                $targetInput.addClass('is-valid');
+                $targetError.text("");
+            } else {
+                $targetInput.removeClass('is-valid');
+                $targetInput.addClass('is-invalid');
+                $targetError.text("Signature must be between 10 and 1000");
+
+            }
+        });
+    });
+
+</script>

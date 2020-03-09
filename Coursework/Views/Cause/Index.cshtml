@@ -1,0 +1,202 @@
+﻿<!--Pagination filtering, sorting and search created using https://docs.microsoft.com/en-us/aspnet/mvc/overview/getting-started/getting-started-with-ef-using-mvc/sorting-filtering-and-paging-with-the-entity-framework-in-an-asp-net-mvc-application-->
+<!--All images from www.pexel.com-->
+@model PagedList.IPagedList<Coursework.Models.Cause>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+@{
+                /**/
+
+
+                ViewBag.Title = "iObjections";
+}
+
+<div class="container">
+    <div class="row">
+        <h2 class="col-sm-12 col-md-6 p-0">iObjections</h2>
+        <div class="col-sm-12 col-md-6">
+            @using (Html.BeginForm("Index", "Cause", FormMethod.Get))
+            {
+                <div class="row d-flex flex-row-reverse my-2">
+
+                    <button class="btn btn-outline-success" type="submit"><i class="fas fa-search"></i></button>
+
+                    @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { @class = "form-control", placeholder = "Search" })
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-3 col-sm-3  col-lg-6 p-0">
+            @if (Session["UserID"] != null)
+            {
+                <div>
+                    @Html.ActionLink("Create New", "Create", "Causes", htmlAttributes: new { @class = "btn btn-primary" })
+                </div>
+            }
+        </div>
+
+        <div class="col-9 col-sm-9  col-lg-6 ">
+            <div class="row justify-content-end">
+                <div class="col-6 col-sm-6 col-md-6 p-0 mr-sm-3">
+                    @using (Html.BeginForm("Index", "Cause", FormMethod.Get, new { @class = "float-right" }))
+                    {
+                        <p>
+                            @Html.DropDownList("selectedCategory", "Categories:")
+                            <button class="btn btn-secondary" type="submit">Filter</button>
+                        </p>
+                    }
+                </div>
+
+                <div class="col-6 col-sm-5 col-md-auto p-0">
+                    <form action="/Cause" method="get" class="float-right">
+                        <select id="sortOrder" name="sortOrder">
+                            <option>Sort by:</option>
+                            <option>
+                                @Html.ActionLink("A-Z", "Index", new { sortOrder = ViewBag.TitleSortParam, currentFilter = ViewBag.CurrentFilter })
+                            </option>
+                            <option>
+                                @Html.ActionLink("Z-A", "Index", new { sortOrder = ViewBag.TitleSortParam, currentFilter = ViewBag.CurrentFilter })
+                            </option>
+                            <option>
+                                @Html.ActionLink("Newest", "Index", new { sortOrder = ViewBag.DateSortParam, currentFilter = ViewBag.CurrentFilter })
+                            </option>
+                            <option>
+                                @Html.ActionLink("Oldest", "Index", new { sortOrder = ViewBag.DateSortParam, currentFilter = ViewBag.CurrentFilter })
+                            </option>
+                            <option>
+                                @Html.ActionLink("Most Signs", "Index", new { sortOrder = ViewBag.SignSortParam, currentFilter = ViewBag.CurrentFilter })
+                            </option>
+                            <option>
+                                @Html.ActionLink("Least Signs", "Index", new { sortOrder = ViewBag.SignSortParam, currentFilter = ViewBag.CurrentFilter })
+                            </option>
+                        </select>
+                        <button class="btn btn-secondary" type="submit">Sort</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container my-2">
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="card col-sm-6 col-md-4">
+                <a href="@Url.Action("Details", "Cause", new { id = item.CauseID })">
+                    <img class="card-img-top" style="width:100%" src="@item.Category.catImage" alt="card image cap" />
+                </a>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <h4 class="card-title">
+                                @Html.DisplayFor(modelItem => item.Title)
+                            </h4>
+                        </div>
+                        <div class="col-6">
+                            <h6>
+                                Category:
+                            </h6>
+                            @Html.DisplayFor(model => item.Category.Name)
+                        </div>
+                    </div>
+
+                    <p class="card-text">
+                        <div class="row">
+                            <div class="col-6">
+                                <h6>
+                                    @Html.DisplayNameFor(model => item.createdBy)
+                                </h6>
+                                @Html.DisplayFor(modelItem => item.createdBy)
+                            </div>
+                            <div class="col-6">
+                                <h6>
+                                    @Html.DisplayNameFor(model => item.createdOn)
+                                </h6>
+                                @Html.DisplayFor(modelItem => item.createdOn)
+                            </div>
+                        </div>
+                        <hr />
+
+                        <div class="row">
+                            <div class="col-12">
+                                <h6>
+                                    @Html.DisplayNameFor(model => item.Description)
+                                </h6>
+                                <div class="card-desc more">
+                                    @Html.DisplayFor(modelItem => item.Description)
+                                </div>
+                            </div>
+                        </div>
+                    </p>
+
+                    <div class="footer my-2">
+                        <div class="row">
+                            <div class="col-6">
+                                @Html.ActionLink("Details", "Details", new { id = item.CauseID }, new { @class = "btn btn-primary" })
+                            </div>
+                            <div class="col-6">
+                                <span class="badge badge-success p-3">
+                                    @item.Signatures.Count Signatures
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+    @Html.PagedListPager(Model, page => Url.Action("Index", new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
+</div>
+
+
+<script>
+    //make cards fade in
+    var $card = $('.card');
+    $card.hide().each(function (index) {
+        index++;
+        $(this).delay(350 * index).fadeIn(350);
+    });
+
+    $(document).ready(function () {
+        // /code written using https://codepen.io/maxds/pen/jgeoA
+        //Make text description shorter
+        var showChar = 100;
+        var ellipsestext = "...";
+        var moretext = "Show more >";
+        var lesstext = "Show less";
+
+
+        $('.more').each(function () {
+            var content = $(this).html();
+
+            if (content.length > showChar) {
+
+                var c = content.substr(0, showChar);
+                var h = content.substr(showChar, content.length - showChar);
+
+                var html = c + '<span class="moreellipses">' + ellipsestext + '&nbsp;</span><span class="morecontent"><span>' + h + '</span>&nbsp;&nbsp;<a href="" class="morelink">' + moretext + '</a></span>';
+
+                $(this).html(html);
+            }
+
+        });
+
+        $(".morelink").click(function () {
+            if ($(this).hasClass("less")) {
+                $(this).removeClass("less");
+                $(this).html(moretext);
+            } else {
+                $(this).addClass("less");
+                $(this).html(lesstext);
+            }
+            $(this).parent().prev().toggle();
+            $(this).prev().toggle();
+            return false;
+        });
+    });
+
+</script>
